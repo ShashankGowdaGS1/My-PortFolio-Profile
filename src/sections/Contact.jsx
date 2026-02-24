@@ -2,6 +2,7 @@ import { Mail, Phone, MapPin, Send, CheckCircle, AlertCircle } from "lucide-reac
 import Button from "@/components/Button";
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
+import { motion } from "framer-motion";
 
 const contactInfo = [
   {
@@ -23,6 +24,38 @@ const contactInfo = [
     href: "#",
   },
 ];
+
+// =============================================================================
+// ANIMATION VARIANTS
+// =============================================================================
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    filter: "blur(0px)",
+    transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }
+  }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.1 }
+  }
+};
+
+const staggerItem = {
+  hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: "easeOut" }
+  }
+};
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -67,28 +100,64 @@ const Contact = () => {
       setIsLoading(false);
     }
   };
+
   return (
     <section id="contact" className="py-32 relative overflow-hidden">
+      {/* Background Effects */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-highlight/10 rounded-full blur-3xl" />
       </div>
       
       <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <span className="text-secondary-foreground text-sm font-medium tracking-wider uppercase animate-fade-in">
+        {/* Section Header */}
+        <motion.div 
+          className="max-w-3xl mx-auto text-center mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+        >
+          <motion.span 
+            variants={fadeInUp}
+            className="text-secondary-foreground text-sm font-medium tracking-wider uppercase"
+          >
             Get in Touch
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-6 animate-fade-in animation-delay-100 text-secondary-foreground">
+          </motion.span>
+          
+          <motion.h2 
+            variants={{
+              ...fadeInUp,
+              visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.1 } }
+            }}
+            className="text-4xl md:text-5xl font-bold mt-4 mb-6 text-secondary-foreground"
+          >
             Let's Connect and <span className="font-serif italic font-normal text-white">Build Something Amazing Together</span>
-          </h2>
-          <p className="text-muted-foreground animate-fade-in animation-delay-200">
+          </motion.h2>
+          
+          <motion.p 
+            variants={{
+              ...fadeInUp,
+              visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.2 } }
+            }}
+            className="text-muted-foreground"
+          >
             Whether you have a question, want to collaborate on a project, or just want to say hi, feel free to reach out. I'm always open to connecting with fellow developers, potential employers, or anyone interested in technology and software development.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
+        {/* Contact Content */}
         <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-          <div  className="glass p-8 rounded-3xl border border-primary animate-fade-in animation-delay-300">
+          {/* Contact Form */}
+          <motion.div 
+            className="glass p-8 rounded-3xl border border-primary"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+            variants={{
+              ...fadeInUp,
+              visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.3 } }
+            }}
+          >
             <form action="" className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-2">Name</label>
@@ -136,7 +205,9 @@ const Contact = () => {
                 )}
               </Button>
               {submitStatus.type && (
-                <div
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
                   className={`flex items-center gap-3 p-4 rounded-xl ${
                     submitStatus.type === "success"
                       ? "bg-green-500/10 border border-green-500/20 text-green-500"
@@ -150,31 +221,40 @@ const Contact = () => {
                   )}
 
                   <p className="text-sm">{submitStatus.message}</p>
-                </div>
+                </motion.div>
               )}
             </form>
-          </div>
+          </motion.div>
 
           {/* Contact Info */}
-          <div className="space-y-6 animate-fade-in animation-delay-400">
+          <motion.div 
+            className="space-y-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+            variants={{
+              ...fadeInUp,
+              visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.4 } }
+            }}
+          >
             <div className="glass rounded-3xl p-8">
               <h3 className="text-xl font-semibold mb-6">
                 Contact Information
               </h3>
 
-              <div className="space-y-4">
+              {/* Contact Items with Staggered Animation */}
+              <motion.div 
+                className="space-y-4"
+                variants={staggerContainer}
+              >
                 {contactInfo.map((item, i) => (
-                  <a
+                  <motion.a
                     key={i}
                     href={item.href}
-                    className="flex items-center gap-4 p-4 rounded-xl
-                              hover:bg-surface transition-colors group"
+                    className="flex items-center gap-4 p-4 rounded-xl hover:bg-surface transition-colors group"
+                    variants={staggerItem}
                   >
-                    <div
-                      className="w-12 h-12 rounded-xl bg-primary/10
-                                flex items-center justify-center
-                                group-hover:bg-primary/20 transition-colors"
-                    >
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                       <item.icon className="w-5 h-5 text-primary" />
                     </div>
 
@@ -186,12 +266,19 @@ const Contact = () => {
                         {item.value}
                       </div>
                     </div>
-                  </a>
+                  </motion.a>
                 ))}
-              </div>
+              </motion.div>
             </div>
+
             {/* Availability Card */}
-            <div className="glass rounded-3xl p-8 border border-primary/30">
+            <motion.div 
+              className="glass rounded-3xl p-8 border border-primary/30"
+              variants={{
+                ...fadeInUp,
+                visible: { ...fadeInUp.visible, transition: { ...fadeInUp.visible.transition, delay: 0.5 } }
+              }}
+            >
               <div className="flex items-center gap-3 mb-4">
                 <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
                 <span className="font-medium">Currently Available</span>
@@ -202,8 +289,8 @@ const Contact = () => {
                 Whether you need a full-time engineer or a freelance consultant,
                 let's talk!
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </section>
